@@ -33,31 +33,31 @@ import pandas
 # X = data_scale[:, 1:14]
 # print(X)
 ######################################################################
-from sklearn.model_selection import cross_val_score
-from sklearn.model_selection import KFold
-from sklearn.neighbors import KNeighborsClassifier
-import sklearn
-
-data = pandas.read_csv('wine.data', sep=',', header=None)  # Load data with separators
-
-y = data[0]  # separate data and answers
-x = data.drop(0, axis=1)  # drop answers
-
-kf = KFold(n_splits=5, shuffle=True, random_state=42)  # k-fold cross validation  separates into n(5)_splits, algorithm is trained on n-1(4) splits and tested on n-th(5th) split, this is done 5 times
-
-maxNeib = 0  # temp for max neibours
-maxMean = 0  # temp for max accuracy
-
-x = sklearn.preprocessing.scale(x)  # normalization normirovanie
-
-for c in range(1, 51):  # cycle for finding better value
-    nbrs = KNeighborsClassifier(n_neighbors=c, algorithm='auto')  # defining machine learning algorithm
-    cvs = cross_val_score(estimator=nbrs, cv=kf, X=x, y=y)  # counting cross validation score
-    result = cvs.mean().round(2)  # rounding
-    print('With neighbours = ', c, 'mean =', result, )  # printing
-
-    if result > maxMean:  # finding best result with max accuracy
-        maxNeib = c
-        maxMean = result
-
-print('Max mean is', maxMean, 'with neibours', maxNeib)  # printing best result
+# from sklearn.model_selection import cross_val_score
+# from sklearn.model_selection import KFold
+# from sklearn.neighbors import KNeighborsClassifier
+# import sklearn
+#
+# data = pandas.read_csv('wine.data', sep=',', header=None)  # Load data with separators
+#
+# y = data[0]  # separate data and answers
+# x = data.drop(0, axis=1)  # drop answers
+#
+# kf = KFold(n_splits=5, shuffle=True, random_state=42)  # k-fold cross validation  separates into n(5)_splits, algorithm is trained on n-1(4) splits and tested on n-th(5th) split, this is done 5 times
+#
+# maxNeib = 0  # temp for max neibours
+# maxMean = 0  # temp for max accuracy
+#
+# x = sklearn.preprocessing.scale(x)  # normalization normirovanie
+#
+# for c in range(1, 51):  # cycle for finding better value
+#     nbrs = KNeighborsClassifier(n_neighbors=c, algorithm='auto')  # defining machine learning algorithm
+#     cvs = cross_val_score(estimator=nbrs, cv=kf, X=x, y=y)  # counting cross validation score
+#     result = cvs.mean().round(2)  # rounding
+#     print('With neighbours = ', c, 'mean =', result, )  # printing
+#
+#     if result > maxMean:  # finding best result with max accuracy
+#         maxNeib = c
+#         maxMean = result
+#
+# print('Max mean is', maxMean, 'with neibours', maxNeib)  # printing best result
