@@ -1,5 +1,3 @@
-import pandas
-
 # data = pandas.read_csv('titanic.csv', index_col='PassengerId')
 # print(data['Sex'].value_counts()) #female male
 # print('Survived ', (data.size / data['Survived'].value_counts()[1]).round(2)) #survived pasengers
@@ -90,6 +88,7 @@ import pandas
 #         iError = i
 # print('MinError is ', minError, 'and i is', iError)
 
+import numpy as np
 # import pandas
 # from sklearn.linear_model import Perceptron
 # from sklearn.metrics import accuracy_score
@@ -128,3 +127,54 @@ import pandas
 # print('Not normalized result of accuracy on test dataset is ', result_not_normalized)
 # print('Normalized result of accuracy on test dataset is ', result_normalized)
 # print('Result is ', (result_normalized - result_not_normalized).round(3))
+###################################################################
+# import pandas
+# from sklearn.svm import SVC
+#
+# data = pandas.read_csv('svm-data.csv', header=None)
+# y = data[0]
+# X = data[[1, 2]]
+# clr = SVC(random_state=241, C=100000, kernel='linear')
+# clr.fit(X, y)
+#
+# print(clr.support_)
+##################################################################
+from sklearn import datasets
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.svm import SVC
+
+newsgroups = datasets.fetch_20newsgroups(
+    subset='all',
+    categories=['alt.atheism', 'sci.space']
+)  # data - text , target class of text ?
+
+vectorizer = TfidfVectorizer()
+X = vectorizer.fit_transform(newsgroups.data)  # with target?
+y = newsgroups.target
+# X = vectorizer.fit_transform(newsgroups.data, y=newsgroups.target)
+# idf = vectorizer.idf_
+# feature_mapping = vectorizer.get_feature_names()
+
+# grid = {'C': np.power(10.0, np.arange(-5, 6))}   # grid given as example
+# cv = KFold(n_splits=5, shuffle=True, random_state=241)
+# clf = SVC(kernel='linear', random_state=241)
+# gs = GridSearchCV(clf, grid, scoring='accuracy', cv=cv)
+# gs.fit(X, y)
+
+# diff_C = [10**-5, 10**-4, 10**-3, 10**-2, 10**-1, 10**0, 10**-1, 10**-2, 10**-3, 10**4, 10**5] # Looking for max C
+# for C in diff_C:
+#     clr = SVC(random_state=241, C=C, kernel='linear')
+#     # clr.fit(X, y)
+#     cv = KFold(n_splits=5, shuffle=True, random_state=241)
+#     cvs = cross_val_score(estimator=clr, cv=cv, X=X, y=y, scoring='accuracy')
+#     print('C is ', C, 'and cvs is ', cvs.mean())
+
+clr = SVC(random_state=241, C=1, kernel='linear')
+clr.fit(X, y)
+
+ind = np.argsort(np.absolute(np.asarray(clr.coef_.todense())).reshape(-1))[-10:]
+
+words = [vectorizer.get_feature_names()[i] for i in ind]
+print(sorted(words))
+# with open("q1.txt", "w") as output:
+#     output.write('%s' % (" ".join(sorted(words))))
