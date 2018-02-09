@@ -237,20 +237,20 @@
 import pandas
 import sklearn.metrics
 
-data = pandas.read_csv('classification.csv')
-
-
-def sort():
-
-    t = data[data['true'] == data['pred']]['pred']
-    tp = t.sum()
-    tn = t.size - tp
-
-    f = data[data['true'] != data['pred']]['pred']
-    fp = f.sum()
-    fn = f.size - fp
-
-    print('%d %d %d %d' % (tp, fp, fn, tn))
+# data = pandas.read_csv('classification.csv')
+#
+#
+# def sort():
+#
+#     t = data[data['true'] == data['pred']]['pred']
+#     tp = t.sum()
+#     tn = t.size - tp
+#
+#     f = data[data['true'] != data['pred']]['pred']
+#     fp = f.sum()
+#     fn = f.size - fp
+#
+#     print('%d %d %d %d' % (tp, fp, fn, tn))
 #
 # #
 # # def count():
@@ -264,63 +264,91 @@ def sort():
 # count()
 # print(data)
 
-fit_data = pandas.read_csv('scores.csv')
-
-def count_score_logreg():
-    precision, recall, thresholds = sklearn.metrics.precision_recall_curve(y_true=fit_data['true'], probas_pred=fit_data['score_logreg'])
-    max_precious = 0
-    for i in range (0, thresholds.size):
-        if recall[i] > 0.7:
-            if precision[i] > max_precious:
-                max_precious = precision[i]
-    print('score_logreg', max_precious)
-
-def count_score_svm():
-    precision, recall, thresholds = sklearn.metrics.precision_recall_curve(y_true=fit_data['true'], probas_pred=fit_data['score_svm'])
-    max_precious = 0
-    for i in range (0, thresholds.size):
-        if recall[i] > 0.7:
-            if precision[i] > max_precious:
-                max_precious = precision[i]
-    print('score_svm', max_precious)
-
-def count_score_knn():
-    precision, recall, thresholds = sklearn.metrics.precision_recall_curve(y_true=fit_data['true'], probas_pred=fit_data['score_knn'])
-    max_precious = 0
-    for i in range (0, thresholds.size):
-        if recall[i] > 0.7:
-            if precision[i] > max_precious:
-                max_precious = precision[i]
-    print('score_knn', max_precious)
-
-def count_score_tree():
-    precision, recall, thresholds = sklearn.metrics.precision_recall_curve(y_true=fit_data['true'], probas_pred=fit_data['score_tree'])
-    max_precious = 0
-    for i in range (0, thresholds.size):
-        if recall[i] > 0.7:
-            if precision[i] > max_precious:
-                max_precious = precision[i]
-    print('score_tree', max_precious)
-
-
-def count_scores():
-    count_score_logreg()
-    count_score_knn()
-    count_score_svm()
-    count_score_tree()
-
-# count_scores()
-sort()
-
-
-for i in range(1, 5):
-    print(fit_data.axes[1][i])
-    print((sklearn.metrics.roc_auc_score(y_true=fit_data['true'], y_score=fit_data[fit_data.axes[1][i]])).round(2))
-
-print('score_logreg is', (sklearn.metrics.roc_auc_score(y_true=fit_data['true'], y_score=fit_data['score_logreg'])).round(2))
-print('score_svm is ', (sklearn.metrics.roc_auc_score(y_true=fit_data['true'], y_score=fit_data['score_svm'])).round(2))
-print('score_knn is ', (sklearn.metrics.roc_auc_score(y_true=fit_data['true'], y_score=fit_data['score_knn'])).round(2))
-print('score_tree is ', (sklearn.metrics.roc_auc_score(y_true=fit_data['true'], y_score=fit_data['score_tree'])).round(2))
+# fit_data = pandas.read_csv('scores.csv')
+#
+# def count_score_logreg():
+#     precision, recall, thresholds = sklearn.metrics.precision_recall_curve(y_true=fit_data['true'], probas_pred=fit_data['score_logreg'])
+#     max_precious = 0
+#     for i in range (0, thresholds.size):
+#         if recall[i] > 0.7:
+#             if precision[i] > max_precious:
+#                 max_precious = precision[i]
+#     print('score_logreg', max_precious)
+#
+# def count_score_svm():
+#     precision, recall, thresholds = sklearn.metrics.precision_recall_curve(y_true=fit_data['true'], probas_pred=fit_data['score_svm'])
+#     max_precious = 0
+#     for i in range (0, thresholds.size):
+#         if recall[i] > 0.7:
+#             if precision[i] > max_precious:
+#                 max_precious = precision[i]
+#     print('score_svm', max_precious)
+#
+# def count_score_knn():
+#     precision, recall, thresholds = sklearn.metrics.precision_recall_curve(y_true=fit_data['true'], probas_pred=fit_data['score_knn'])
+#     max_precious = 0
+#     for i in range (0, thresholds.size):
+#         if recall[i] > 0.7:
+#             if precision[i] > max_precious:
+#                 max_precious = precision[i]
+#     print('score_knn', max_precious)
+#
+# def count_score_tree():
+#     precision, recall, thresholds = sklearn.metrics.precision_recall_curve(y_true=fit_data['true'], probas_pred=fit_data['score_tree'])
+#     max_precious = 0
+#     for i in range (0, thresholds.size):
+#         if recall[i] > 0.7:
+#             if precision[i] > max_precious:
+#                 max_precious = precision[i]
+#     print('score_tree', max_precious)
+#
+#
+# def count_scores():
+#     count_score_logreg()
+#     count_score_knn()
+#     count_score_svm()
+#     count_score_tree()
+#
+# # count_scores()
+# sort()
+#
+#
+# for i in range(1, 5):
+#     print(fit_data.axes[1][i])
+#     print((sklearn.metrics.roc_auc_score(y_true=fit_data['true'], y_score=fit_data[fit_data.axes[1][i]])).round(2))
+#
+# print('score_logreg is', (sklearn.metrics.roc_auc_score(y_true=fit_data['true'], y_score=fit_data['score_logreg'])).round(2))
+# print('score_svm is ', (sklearn.metrics.roc_auc_score(y_true=fit_data['true'], y_score=fit_data['score_svm'])).round(2))
+# print('score_knn is ', (sklearn.metrics.roc_auc_score(y_true=fit_data['true'], y_score=fit_data['score_knn'])).round(2))
+# print('score_tree is ', (sklearn.metrics.roc_auc_score(y_true=fit_data['true'], y_score=fit_data['score_tree'])).round(2))
 # print(fit_data)
 # print(data[0:1])
 # print(data.shape[1])
+import pandas
+
+import pandas
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction import DictVectorizer
+from scipy.sparse import hstack
+
+data_train = pandas.read_csv('salary-train.csv')
+data_test = pandas.read_csv('salary-test-mini.csv')
+
+data_train['FullDescription'] = data_train['FullDescription'].str.lower()
+data_train['LocationNormalized'] = data_train['LocationNormalized'].str.lower()
+
+data_train['FullDescription'] = data_train['FullDescription'].replace('[^a-zA-Z0-9]', ' ', regex=True)
+data_train['LocationNormalized'].fillna('nan', inplace=True)
+data_train['ContractTime'].fillna('nan', inplace=True)
+
+vectorizer = TfidfVectorizer(min_df=5)
+X = vectorizer.fit_transform(data_train['FullDescription'])  # with target?
+print(X)
+# y = newsgroups.target
+
+# enc = DictVectorizer()
+# X_train_categ = enc.fit_transform(data_train[['LocationNormalized', 'ContractTime']].to_dict('records'))
+# X_test_categ = enc.transform(data_test[['LocationNormalized', 'ContractTime']].to_dict('records'))
+
+# contcatenate_train_data = hstack((data_train, X_train_categ))
+# contcatenate_test_data = hstack((data_test, X_test_categ))
