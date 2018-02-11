@@ -342,13 +342,13 @@ data_train['LocationNormalized'].fillna('nan', inplace=True)
 data_train['ContractTime'].fillna('nan', inplace=True)
 
 vectorizer = TfidfVectorizer(min_df=5)
-X = vectorizer.fit_transform(data_train['FullDescription'])  # with target?
-print(X)
-# y = newsgroups.target
+X_tfid_train = vectorizer.fit_transform(data_train['FullDescription'])
 
-# enc = DictVectorizer()
-# X_train_categ = enc.fit_transform(data_train[['LocationNormalized', 'ContractTime']].to_dict('records'))
-# X_test_categ = enc.transform(data_test[['LocationNormalized', 'ContractTime']].to_dict('records'))
+enc = DictVectorizer()
+X_train_categ = enc.fit_transform(data_train[['LocationNormalized', 'ContractTime']].to_dict('records'))
+X_test_categ = enc.transform(data_test[['LocationNormalized', 'ContractTime']].to_dict('records'))
 
-# contcatenate_train_data = hstack((data_train, X_train_categ))
+contcatenate_train_data = hstack((X_tfid_train, X_train_categ))
 # contcatenate_test_data = hstack((data_test, X_test_categ))
+
+# print(contcatenate_train_data)
