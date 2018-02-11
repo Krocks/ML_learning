@@ -357,5 +357,5 @@ contcatenate_test_data = hstack((X_tfid_test, X_test_categ))
 ridge = Ridge(alpha=1, random_state=241)
 ridge.fit(X=contcatenate_train_data, y=y)
 
-print(ridge.predict(contcatenate_test_data))
+print((ridge.predict(contcatenate_test_data)).round(2))
 # print(contcatenate_train_data)
