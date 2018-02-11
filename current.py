@@ -330,9 +330,11 @@ import pandas
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_extraction import DictVectorizer
 from scipy.sparse import hstack
+from sklearn.linear_model import Ridge
 
 data_train = pandas.read_csv('salary-train.csv')
 data_test = pandas.read_csv('salary-test-mini.csv')
+y = data_train['SalaryNormalized']
 
 data_train['FullDescription'] = data_train['FullDescription'].str.lower()
 data_train['LocationNormalized'] = data_train['LocationNormalized'].str.lower()
@@ -343,12 +345,17 @@ data_train['ContractTime'].fillna('nan', inplace=True)
 
 vectorizer = TfidfVectorizer(min_df=5)
 X_tfid_train = vectorizer.fit_transform(data_train['FullDescription'])
+X_tfid_test = vectorizer.transform(data_test['FullDescription'])
 
 enc = DictVectorizer()
 X_train_categ = enc.fit_transform(data_train[['LocationNormalized', 'ContractTime']].to_dict('records'))
 X_test_categ = enc.transform(data_test[['LocationNormalized', 'ContractTime']].to_dict('records'))
 
 contcatenate_train_data = hstack((X_tfid_train, X_train_categ))
-# contcatenate_test_data = hstack((data_test, X_test_categ))
+contcatenate_test_data = hstack((X_tfid_test, X_test_categ))
 
+ridge = Ridge(alpha=1, random_state=241)
+ridge.fit(X=contcatenate_train_data, y=y)
+
+print(ridge.predict(contcatenate_test_data))
 # print(contcatenate_train_data)
