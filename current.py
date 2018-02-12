@@ -326,36 +326,62 @@ import sklearn.metrics
 # print(data.shape[1])
 import pandas
 
+# import pandas
+# from sklearn.feature_extraction.text import TfidfVectorizer
+# from sklearn.feature_extraction import DictVectorizer
+# from scipy.sparse import hstack
+# from sklearn.linear_model import Ridge
+#
+# data_train = pandas.read_csv('salary-train.csv')
+# data_test = pandas.read_csv('salary-test-mini.csv')
+# y = data_train['SalaryNormalized']
+#
+# data_train['FullDescription'] = data_train['FullDescription'].str.lower()
+# data_train['LocationNormalized'] = data_train['LocationNormalized'].str.lower()
+#
+# data_train['FullDescription'] = data_train['FullDescription'].replace('[^a-zA-Z0-9]', ' ', regex=True)
+# data_train['LocationNormalized'].fillna('nan', inplace=True)
+# data_train['ContractTime'].fillna('nan', inplace=True)
+#
+# vectorizer = TfidfVectorizer(min_df=5)
+# X_tfid_train = vectorizer.fit_transform(data_train['FullDescription'])
+# X_tfid_test = vectorizer.transform(data_test['FullDescription'])
+#
+# enc = DictVectorizer()
+# X_train_categ = enc.fit_transform(data_train[['LocationNormalized', 'ContractTime']].to_dict('records'))
+# X_test_categ = enc.transform(data_test[['LocationNormalized', 'ContractTime']].to_dict('records'))
+#
+# contcatenate_train_data = hstack((X_tfid_train, X_train_categ))
+# contcatenate_test_data = hstack((X_tfid_test, X_test_categ))
+#
+# ridge = Ridge(alpha=1, random_state=241)
+# ridge.fit(X=contcatenate_train_data, y=y)
+#
+# print((ridge.predict(contcatenate_test_data)).round(2))
+
 import pandas
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.feature_extraction import DictVectorizer
-from scipy.sparse import hstack
-from sklearn.linear_model import Ridge
+from numpy import corrcoef, argmax
+from sklearn.decomposition import PCA
 
-data_train = pandas.read_csv('salary-train.csv')
-data_test = pandas.read_csv('salary-test-mini.csv')
-y = data_train['SalaryNormalized']
+dou_jones = pandas.read_csv('djia_index.csv')['^DJI']
+close_prices = pandas.read_csv('close_prices.csv').iloc[:, 1:]
 
-data_train['FullDescription'] = data_train['FullDescription'].str.lower()
-data_train['LocationNormalized'] = data_train['LocationNormalized'].str.lower()
+pca = PCA(n_components=10)
+pca.fit(close_prices)
+pc = pca.transform(close_prices)[:, 0]
 
-data_train['FullDescription'] = data_train['FullDescription'].replace('[^a-zA-Z0-9]', ' ', regex=True)
-data_train['LocationNormalized'].fillna('nan', inplace=True)
-data_train['ContractTime'].fillna('nan', inplace=True)
 
-vectorizer = TfidfVectorizer(min_df=5)
-X_tfid_train = vectorizer.fit_transform(data_train['FullDescription'])
-X_tfid_test = vectorizer.transform(data_test['FullDescription'])
+dispersion = 0
+components = 0
+for variable in pca.explained_variance_ratio_:
+    components += 1
+    dispersion += variable
+    print('components ', components, 'dispersion', dispersion, 'variable number', variable)
+    if dispersion >= 0.9:
+        break
+print(1, components)
 
-enc = DictVectorizer()
-X_train_categ = enc.fit_transform(data_train[['LocationNormalized', 'ContractTime']].to_dict('records'))
-X_test_categ = enc.transform(data_test[['LocationNormalized', 'ContractTime']].to_dict('records'))
+correlation = corrcoef(pc, dou_jones)[0, 1]
+print(correlation.round(2))
 
-contcatenate_train_data = hstack((X_tfid_train, X_train_categ))
-contcatenate_test_data = hstack((X_tfid_test, X_test_categ))
 
-ridge = Ridge(alpha=1, random_state=241)
-ridge.fit(X=contcatenate_train_data, y=y)
-
-print((ridge.predict(contcatenate_test_data)).round(2))
-# print(contcatenate_train_data)
