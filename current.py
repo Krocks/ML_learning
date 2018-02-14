@@ -359,29 +359,137 @@ import pandas
 #
 # print((ridge.predict(contcatenate_test_data)).round(2))
 
-import pandas
-from numpy import corrcoef, argmax
-from sklearn.decomposition import PCA
+# import pandas
+# from numpy import corrcoef, argmax
+# from sklearn.decomposition import PCA
+#
+# dou_jones = pandas.read_csv('djia_index.csv')['^DJI']
+# close_prices = pandas.read_csv('close_prices.csv').iloc[:, 1:]
+#
+# pca = PCA(n_components=10)
+# pca.fit(close_prices)
+# pc = pca.transform(close_prices)[:, 0]
+#
+#
+# dispersion = 0
+# components = 0
+# for variable in pca.explained_variance_ratio_:
+#     components += 1
+#     dispersion += variable
+#     print('components ', components, 'dispersion', dispersion, 'variable number', variable)
+#     if dispersion >= 0.9:
+#         break
+# print(1, components)
+#
+# correlation = corrcoef(pc, dou_jones)[0, 1]
+# print(correlation.round(2))
 
-dou_jones = pandas.read_csv('djia_index.csv')['^DJI']
-close_prices = pandas.read_csv('close_prices.csv').iloc[:, 1:]
 
-pca = PCA(n_components=10)
-pca.fit(close_prices)
-pc = pca.transform(close_prices)[:, 0]
+# import pandas
+# from sklearn.ensemble import RandomForestRegressor
+# from sklearn.model_selection import KFold, cross_val_score
+# import numpy as np
+# from sklearn.metrics import r2_score
+#
+# data = pandas.read_csv('abalone.csv')
+# data['Sex'] = data['Sex'].map(lambda x: 1 if x == 'M' else (-1 if x == 'F' else 0))
+# y = data['Rings']
+# X = data.iloc[:, 0:8]
+# # X = data.iloc[:, :-1]
+#
+# kf = KFold(n_splits=5, shuffle=True, random_state=1)
+# for i in range(1, 50):
+#     rfr = RandomForestRegressor(random_state=1, n_estimators=i)
+#     rfr.fit(X=X, y=y)
+#     cvs = cross_val_score(estimator=rfr, cv=kf, X=X, y=y, scoring='r2')
+#     print('Trees = ', i, 'Score = ', cvs.mean())
+######################################################################################################
+# import pandas
+# import numpy as np, os
+# import math
+# from sklearn.ensemble import GradientBoostingClassifier
+# from sklearn.metrics import log_loss
+# from sklearn.model_selection import train_test_split
+# if not os.path.exists('plots'):
+#     os.makedirs('plots')
+#
+#
+# def plot(train_loss, test_loss, fname):
+#     import matplotlib
+#     matplotlib.use('Agg')
+#     import matplotlib.pyplot as plt
+#     # %matplotlib inline
+#     plt.figure()
+#     plt.plot(test_loss, 'r', linewidth=2)
+#     plt.plot(train_loss, 'g', linewidth=2)
+#     plt.legend(['test', 'train'])
+#     plt.savefig(fname)
+#
+#
+# data = pandas.read_csv('gbm-data.csv')
+# y = data.iloc[:, 0]
+# X = data.iloc[:, 1:]
+#
+# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.8, random_state=241)
+# learning_rate = [1, 0.5, 0.3, 0.2, 0.1]
+# for i in range(0, len(learning_rate)):
+#     print('Learning rate = ', learning_rate[i])
+#     clf = GradientBoostingClassifier(n_estimators=250, verbose=True, random_state=241, learning_rate=learning_rate[i])
+#     clf.fit(X_train, y_train)
+#     clf.staged_decision_function(X_train)
+#     clf.staged_decision_function(X_test)
+#     y_pred_test = clf.predict(X_test)
+#     y_pred_train = clf.predict(X_train)
+#     y_pred_test = 1 / (1 + np.exp(-y_pred_test))
+#     y_pred_train = 1 / (1 + np.exp(-y_pred_train))
+#     stg_loss_test = log_loss(y_pred=y_pred_test, y_true=y_test)
+#     stg_loss_train = log_loss(y_pred=y_pred_train, y_true=y_train)
+#     print(stg_loss_test)
+#
+#     # plot(stg_loss_train, stg_loss_test, 'plots/%.1f.png' % (learning_rate[i]))
+from pandas import read_csv
+data = read_csv('gbm-data.csv')
 
+X = data.iloc[:,1:]
+y = data.iloc[:,0]
 
-dispersion = 0
-components = 0
-for variable in pca.explained_variance_ratio_:
-    components += 1
-    dispersion += variable
-    print('components ', components, 'dispersion', dispersion, 'variable number', variable)
-    if dispersion >= 0.9:
-        break
-print(1, components)
+from sklearn.cross_validation import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.8, random_state=241)
 
-correlation = corrcoef(pc, dou_jones)[0, 1]
-print(correlation.round(2))
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.metrics import log_loss
+import numpy as np, os
+if not os.path.exists('plots'):
+    os.makedirs('plots')
 
+def plot(train_loss, test_loss, fname):
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    # %matplotlib inline
+    plt.figure()
+    plt.plot(test_loss, 'r', linewidth=2)
+    plt.plot(train_loss, 'g', linewidth=2)
+    plt.legend(['test', 'train'])
+    plt.savefig(fname)
 
+min_losses = {}
+for index, learning_rate in enumerate([1, 0.5, 0.3, 0.2, 0.1], start=1):
+    clf = GradientBoostingClassifier(n_estimators=250, learning_rate=learning_rate, verbose=True, random_state=241)
+    clf.fit(X_train, y_train)
+    train_pred_iters = clf.staged_predict_proba(X_train)
+    test_pred_iters = clf.staged_predict_proba(X_test)
+    train_loss = [ log_loss(y_train, pred) for pred in train_pred_iters]
+    test_loss = [ log_loss(y_test, pred) for pred in test_pred_iters]
+    best_iter = np.argmin(test_loss)
+    min_losses[learning_rate] = (test_loss[best_iter], best_iter)
+    plot(train_loss, test_loss, 'plots/%d_%.1f.png' % (index, learning_rate))
+
+print('Min losses ',min_losses[0.2])
+
+from sklearn.ensemble import RandomForestClassifier
+rf = RandomForestClassifier(n_estimators=min_losses[0.2][1], random_state=241)
+rf.fit(X_train, y_train)
+rf_pred = rf.predict_proba(X_test)[:, 1]
+rf_score = log_loss(y_test, rf_pred)
+print('Question 3', rf_score)
