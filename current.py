@@ -507,18 +507,13 @@ image = imread('parrots.jpg')
 
 float_data = skimage.img_as_float(image)
 
-data = pd.DataFrame(columns=['R', 'G', 'B'])
-float_data = np.reshape(a=float_data, newshape=(337962, 3))
+float_data = np.reshape(a=float_data, newshape=(474*713, 3))
+data = pd.DataFrame(data=float_data, columns=['R', 'G', 'B'])
 
-# for i in range(0, float_data.shape[0]):
-#     for j in range(0, float_data.shape[1]):
-#         temp = pd.Series(float_data[i, j])
-#         data.append(temp, ignore_index=True)
-
-print(float_data)
-print(float_data.shape)
-# kmean = KMeans(init='k-means++', random_state=241)
-# kmean.fit(data)
+print(data)
+# print(float_data.shape)
+kmean = KMeans(init='k-means++', random_state=241)
+cluster = kmean.fit(data)
 
 # pylab.imshow(image)
 # pylab.show()
