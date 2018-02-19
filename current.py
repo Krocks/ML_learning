@@ -405,48 +405,48 @@ import pandas
 #     print('Trees = ', i, 'Score = ', cvs.mean())
 ######################################################################################################
 # https://www.coursera.org/learn/vvedenie-mashinnoe-obuchenie/programming/uDU31/gradiientnyi-bustingh-nad-rieshaiushchimi-dieriev-iami
-import pandas
-import numpy as np, os
-import math
-from sklearn.ensemble import GradientBoostingClassifier
-from sklearn.metrics import log_loss
-from sklearn.model_selection import train_test_split
-if not os.path.exists('plots'):
-    os.makedirs('plots')
-
-
-def plot(train_loss, test_loss, fname):
-    import matplotlib
-    matplotlib.use('Agg')
-    import matplotlib.pyplot as plt
-    # %matplotlib inline
-    plt.figure()
-    plt.plot(test_loss, 'r', linewidth=2)
-    plt.plot(train_loss, 'g', linewidth=2)
-    plt.legend(['test', 'train'])
-    plt.savefig(fname)
-
-
-data = pandas.read_csv('gbm-data.csv')
-y = data.iloc[:, 0]
-X = data.iloc[:, 1:]
-
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.8, random_state=241)
-learning_rate = [1, 0.5, 0.3, 0.2, 0.1]
-for i in range(0, len(learning_rate)):
-    print('Learning rate = ', learning_rate[i])
-    clf = GradientBoostingClassifier(n_estimators=250, verbose=2, random_state=241, learning_rate=learning_rate[i])
-    clf.fit(X_train, y_train)
-    error_train = clf.staged_decision_function(X_train)
-    error_test = clf.staged_decision_function(X_test)
-    print(error_train)
-    # y_pred_test = clf.predict(X_test)
-    # y_pred_train = clf.predict(X_train)
-    # y_pred_test = 1 / (1 + np.exp(-error_test))
-    # y_pred_train = 1 / (1 + np.exp(-error_train))
-    # stg_loss_test = log_loss(y_pred=y_pred_test, y_true=y_test)
-    # stg_loss_train = log_loss(y_pred=y_pred_train, y_true=y_train)
-    # print(stg_loss_test)
+# import pandas
+# import numpy as np, os
+# import math
+# from sklearn.ensemble import GradientBoostingClassifier
+# from sklearn.metrics import log_loss
+# from sklearn.model_selection import train_test_split
+# if not os.path.exists('plots'):
+#     os.makedirs('plots')
+#
+#
+# def plot(train_loss, test_loss, fname):
+#     import matplotlib
+#     matplotlib.use('Agg')
+#     import matplotlib.pyplot as plt
+#     # %matplotlib inline
+#     plt.figure()
+#     plt.plot(test_loss, 'r', linewidth=2)
+#     plt.plot(train_loss, 'g', linewidth=2)
+#     plt.legend(['test', 'train'])
+#     plt.savefig(fname)
+#
+#
+# data = pandas.read_csv('gbm-data.csv')
+# y = data.iloc[:, 0]
+# X = data.iloc[:, 1:]
+#
+# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.8, random_state=241)
+# learning_rate = [1, 0.5, 0.3, 0.2, 0.1]
+# for i in range(0, len(learning_rate)):
+#     print('Learning rate = ', learning_rate[i])
+#     clf = GradientBoostingClassifier(n_estimators=250, verbose=2, random_state=241, learning_rate=learning_rate[i])
+#     clf.fit(X_train, y_train)
+#     error_train = clf.staged_decision_function(X_train)
+#     error_test = clf.staged_decision_function(X_test)
+#     print(error_train)
+# y_pred_test = clf.predict(X_test)
+# y_pred_train = clf.predict(X_train)
+# y_pred_test = 1 / (1 + np.exp(-error_test))
+# y_pred_train = 1 / (1 + np.exp(-error_train))
+# stg_loss_test = log_loss(y_pred=y_pred_test, y_true=y_test)
+# stg_loss_train = log_loss(y_pred=y_pred_train, y_true=y_train)
+# print(stg_loss_test)
 
 #     # plot(stg_loss_train, stg_loss_test, 'plots/%.1f.png' % (learning_rate[i]))
 # from pandas import read_csv
@@ -487,11 +487,38 @@ for i in range(0, len(learning_rate)):
 #     min_losses[learning_rate] = (test_loss[best_iter], best_iter)
 #     plot(train_loss, test_loss, 'plots/%d_%.1f.png' % (index, learning_rate))
 #
-# print('Min losses ',min_losses[0.2])
+# print('Min losses ',min_losses[0.2][0].round(2), ', iteration ', min_losses[0.2][1])
 #
 # from sklearn.ensemble import RandomForestClassifier
 # rf = RandomForestClassifier(n_estimators=min_losses[0.2][1], random_state=241)
 # rf.fit(X_train, y_train)
 # rf_pred = rf.predict_proba(X_test)[:, 1]
 # rf_score = log_loss(y_test, rf_pred)
-# print('Question 3', rf_score)
+# print('Question 3', rf_score.round(2))
+
+from skimage.io import imread
+import pandas as pd
+import numpy as np
+import skimage
+import pylab
+from sklearn.cluster import KMeans
+
+image = imread('parrots.jpg')
+
+float_data = skimage.img_as_float(image)
+
+data = pd.DataFrame(columns=['R', 'G', 'B'])
+float_data = np.reshape(a=float_data, newshape=(337962, 3))
+
+# for i in range(0, float_data.shape[0]):
+#     for j in range(0, float_data.shape[1]):
+#         temp = pd.Series(float_data[i, j])
+#         data.append(temp, ignore_index=True)
+
+print(float_data)
+print(float_data.shape)
+# kmean = KMeans(init='k-means++', random_state=241)
+# kmean.fit(data)
+
+# pylab.imshow(image)
+# pylab.show()
