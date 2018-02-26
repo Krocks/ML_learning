@@ -1,0 +1,39 @@
+GradientBoostingClassifier(verbose=0, n_estimators=trees, max_depth=2, learning_rate=0.2)
+Trees =  10 Cross value score =  0.6671636952633179
+Time elapsed: 0:00:18.632066
+Trees =  20 Cross value score =  0.6846335626947407
+Time elapsed: 0:00:33.262903
+Trees =  30 Cross value score =  0.6920588423231067
+Time elapsed: 0:00:47.524718
+Trees =  100 Cross value score =  0.7083810381133875
+Time elapsed: 0:02:36.463949
+
+GradientBoostingClassifier(verbose=0, n_estimators=trees, max_depth=2, learning_rate=0.5)
+Trees =  10 Cross value score =  0.6777651203803424
+Time elapsed: 0:00:18.507058
+Trees =  20 Cross value score =  0.6918753840071605
+Time elapsed: 0:00:33.806934
+Trees =  30 Cross value score =  0.7001428755965425
+Time elapsed: 0:00:49.395825
+Trees =  100 Cross value score =  0.7128250717325864
+Time elapsed: 0:02:33.973807
+
+GradientBoostingClassifier(verbose=0, n_estimators=trees, max_depth=2, learning_rate=2) OVERFIT
+Trees =  10 Cross value score =  0.483048567866115
+Time elapsed: 0:00:20.955198
+Trees =  20 Cross value score =  0.4957621339722101
+Time elapsed: 0:00:38.095179
+Trees =  30 Cross value score =  0.4685270431168333
+Time elapsed: 0:00:52.852023
+Trees =  100 Cross value score =  0.487140415397967
+Time elapsed: 0:02:46.139503
+
+GradientBoostingClassifier(verbose=0, n_estimators=trees)
+Trees =  10 Cross value score =  0.6645850512249734
+Time elapsed: 0:00:32.825878
+Trees =  20 Cross value score =  0.6812031672749024
+Time elapsed: 0:01:01.634525
+Trees =  30 Cross value score =  0.6901283769279053
+Time elapsed: 0:01:28.898085
+Trees =  100 Cross value score =  0.7062319153700038
+Time elapsed: 0:04:45.149309
