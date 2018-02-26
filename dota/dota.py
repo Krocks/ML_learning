@@ -39,10 +39,10 @@ data = data.fillna(0)  # TODO check another filling of NaN
 
 trees_count = [10, 20, 30]
 for index, trees in enumerate(trees_count):
-    clf = GradientBoostingClassifier(verbose=1)
+    clf = GradientBoostingClassifier(verbose=1, n_estimators=trees)
     clf.fit(data, result['radiant_win'])
     kf = KFold(n_splits=5, shuffle=True)
     cvs = cross_val_score(estimator=clf, cv=kf, X=data, y=result['radiant_win'])
-    print(cvs)
+    print('Trees = ', trees, 'Cross value score = ', cvs.mean())
 
 # print(data['match_id'].value_counts())
