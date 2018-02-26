@@ -1,0 +1,8 @@
+LIST OF COLUMN NAMES FOR EXAMPLE
+result_columns_names = ['duration', 'radiant_win', 'tower_status_radiant',
+                        'tower_status_dire', 'barracks_status_radiant', 'barracks_status_dire']
+
+                    SELECT COLUMNS
+result = data[result_columns_names]
+ REMOVE COLUMNS FROM DATAFRAME
+data = data.drop(result_columns_names, axis=1)  1 for columns, 0 for rows
