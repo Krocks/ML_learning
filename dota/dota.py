@@ -42,7 +42,7 @@ data = data.fillna(0)  # TODO check another filling of NaN
 trees_count = [10, 20, 30, 100]
 for index, trees in enumerate(trees_count):
     start_time = datetime.datetime.now()
-    clf = GradientBoostingClassifier(verbose=0, n_estimators=trees, max_depth=2, learning_rate=2)
+    clf = GradientBoostingClassifier(verbose=0, n_estimators=trees, max_depth=2, learning_rate=0.7)  # tryed 0.2, 0.5, 0.7, 1, 2
     clf.fit(data, result['radiant_win'])
     kf = KFold(n_splits=5, shuffle=True)
     cvs = cross_val_score(estimator=clf, cv=kf, X=data, y=result['radiant_win'], scoring='roc_auc')
