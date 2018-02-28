@@ -41,15 +41,15 @@ data = data.fillna(0)  # TODO check another filling of NaN
 # # настраивались классификаторы? Достигнут ли оптимум на испытанных значениях параметра n_estimators, или же качество,
 # #  скорее всего, продолжит расти при дальнейшем его увеличении?
 #
-trees_count = [10, 20, 30, 100]
-for index, trees in enumerate(trees_count):
-    start_time = datetime.datetime.now()
-    clf = GradientBoostingClassifier(verbose=0, n_estimators=trees, max_depth=2, learning_rate=0.7)  # tryed 0.2, 0.5, 0.7, 1, 2
-    clf.fit(data, result['radiant_win'])  # fir doesn't need here cvs creates copy
-    kf = KFold(n_splits=5, shuffle=True)
-    cvs = cross_val_score(estimator=clf, cv=kf, X=data, y=result['radiant_win'], scoring='roc_auc')
-    print('Trees = ', trees, 'Cross value score = ', cvs.mean())
-    print('Time elapsed:', datetime.datetime.now() - start_time)
+# trees_count = [10, 20, 30, 100]
+# for index, trees in enumerate(trees_count):
+#     start_time = datetime.datetime.now()
+#     clf = GradientBoostingClassifier(verbose=0, n_estimators=trees, max_depth=2, learning_rate=0.7)  # tryed 0.2, 0.5, 0.7, 1, 2
+#     clf.fit(data, result['radiant_win'])  # fir doesn't need here cvs creates copy
+#     kf = KFold(n_splits=5, shuffle=True)
+#     cvs = cross_val_score(estimator=clf, cv=kf, X=data, y=result['radiant_win'], scoring='roc_auc')
+#     print('Trees = ', trees, 'Cross value score = ', cvs.mean())
+#     print('Time elapsed:', datetime.datetime.now() - start_time)
 #
 # # Trees =  10 Cross value score =  0.6645850512249734
 # # Time elapsed: 0:00:32.825878
@@ -77,24 +77,24 @@ for index, trees in enumerate(trees_count):
 # # параметр регуляризации (C). Какое наилучшее качество у вас получилось? Как оно соотносится с качеством градиентного
 # #  бустинга? Чем вы можете объяснить эту разницу? Быстрее ли работает логистическая регрессия по сравнению с
 # # градиентным бустингом?
-scaler = StandardScaler()
-data = scaler.fit_transform(data)
-# regularization = np.arange(1, 10, 0.1)  # 8.1 max Max is  0.7164357243534086 With C =  1.3000000000000003
-regularization = np.power(10.0, np.arange(-5, 6))  # Max is  0.7164706557971849 With C =  0.01
-max = 0
-max_c = 0
-for i, C in enumerate(regularization):
-    start_time = datetime.datetime.now()
-    # clf = LogisticRegression(verbose=0, penalty='l2', C=C, n_jobs=-1)
-    clf = LogisticRegression(verbose=0, C=C)
-    kf = KFold(n_splits=5, shuffle=True, random_state=45)
-    cvs = cross_val_score(estimator=clf, cv=kf, X=data, y=result['radiant_win'], scoring='roc_auc')
-    # print('Time elapsed:', datetime.datetime.now() - start_time)
-    print('C is ', C, 'Cross value score ', cvs.mean())
-    if cvs.mean() > max:
-        max = cvs.mean()
-        max_c = C
-print('Max is ', max, 'With C = ', max_c)
+# scaler = StandardScaler()
+# data = scaler.fit_transform(data)
+# # regularization = np.arange(1, 10, 0.1)  # 8.1 max Max is  0.7164357243534086 With C =  1.3000000000000003
+# regularization = np.power(10.0, np.arange(-5, 6))  # Max is  0.7164706557971849 With C =  0.01
+# max = 0
+# max_c = 0
+# for i, C in enumerate(regularization):
+#     start_time = datetime.datetime.now()
+#     # clf = LogisticRegression(verbose=0, penalty='l2', C=C, n_jobs=-1)
+#     clf = LogisticRegression(verbose=0, C=C)
+#     kf = KFold(n_splits=5, shuffle=True, random_state=45)
+#     cvs = cross_val_score(estimator=clf, cv=kf, X=data, y=result['radiant_win'], scoring='roc_auc')
+#     # print('Time elapsed:', datetime.datetime.now() - start_time)
+#     print('C is ', C, 'Cross value score ', cvs.mean())
+#     if cvs.mean() > max:
+#         max = cvs.mean()
+#         max_c = C
+# print('Max is ', max, 'With C = ', max_c)
 
 # # На предыдущем шаге мы исключили из выборки признаки rM_hero и dM_hero, которые показывают, какие именно герои
 # # играли за каждую команду. Это важные признаки — герои имеют разные характеристики, и некоторые из них выигрывают
@@ -127,15 +127,37 @@ data = scaler.fit_transform(data)
 regularization = np.power(10.0, np.arange(-5, 6))  # Max is  0.7164706557971849 With C =  0.01
 max = 0
 max_c = 0
-for i, C in enumerate(regularization):
-    start_time = datetime.datetime.now()
-    # clf = LogisticRegression(verbose=0, penalty='l2', C=C, n_jobs=-1)
-    clf = LogisticRegression(verbose=0, C=C)
-    kf = KFold(n_splits=5, shuffle=True, random_state=45)
-    cvs = cross_val_score(estimator=clf, cv=kf, X=data, y=result['radiant_win'], scoring='roc_auc')
-    # print('Time elapsed:', datetime.datetime.now() - start_time)
-    print('C is ', C, 'Cross value score ', cvs.mean())
-    if cvs.mean() > max:
-        max = cvs.mean()
-        max_c = C
-print('Max is ', max, 'With C = ', max_c)  # Max is  0.7519233522872815 With C =  0.01e
+# for i, C in enumerate(regularization):
+#     start_time = datetime.datetime.now()
+#     # clf = LogisticRegression(verbose=0, penalty='l2', C=C, n_jobs=-1)
+#     clf = LogisticRegression(verbose=0, C=C)
+#     kf = KFold(n_splits=5, shuffle=True, random_state=45)
+#     cvs = cross_val_score(estimator=clf, cv=kf, X=data, y=result['radiant_win'], scoring='roc_auc')
+#     # print('Time elapsed:', datetime.datetime.now() - start_time)
+#     print('C is ', C, 'Cross value score ', cvs.mean())
+#     if cvs.mean() > max:
+#         max = cvs.mean()
+#         max_c = C
+# print('Max is ', max, 'With C = ', max_c)  # Max is  0.7519233522872815 With C =  0.01e
+
+clf = LogisticRegression(verbose=0, penalty='l2', C=0.01)
+model = clf.fit(data, result['radiant_win'])
+
+test_data = pandas.read_csv('features_test.csv')
+test_data = test_data.fillna(0)
+
+
+X_pick = np.zeros((test_data.shape[0], heroes_lenth))
+for i, match_id in enumerate(test_data.index):
+    for p in range(5):
+        X_pick[i, test_data.ix[match_id, 'r%d_hero' % (p+1)]-1] = 1
+        X_pick[i, test_data.ix[match_id, 'd%d_hero' % (p+1)]-1] = -1
+data_heroes = pandas.DataFrame(X_pick)   # not so elegant but works
+test_data = pandas.concat([test_data, data_heroes], axis=1)
+test_data = scaler.fit_transform(test_data)
+
+predictions = model.predict_proba(test_data)
+print(predictions)
+
+print('Max: ', predictions.max())
+print('Min: ', predictions.min())
