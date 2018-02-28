@@ -5,7 +5,7 @@ import numpy as np
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import KFold, cross_val_score
-
+from sklearn.preprocessing import StandardScaler
 # Считайте таблицу с признаками из файла features.csv с помощью кода, приведенного выше. Удалите признаки,
 # связанные с итогами матча (они помечены в описании данных как отсутствующие в тестовой выборке).
 
@@ -77,22 +77,24 @@ data = data.fillna(0)  # TODO check another filling of NaN
 # # параметр регуляризации (C). Какое наилучшее качество у вас получилось? Как оно соотносится с качеством градиентного
 # #  бустинга? Чем вы можете объяснить эту разницу? Быстрее ли работает логистическая регрессия по сравнению с
 # # градиентным бустингом?
-# # regularization = np.arange(1, 10, 0.1)  # 8.1 max
-regularization = np.power(10.0, np.arange(-5, 6))  # 10000 max
-max = 0
-max_c = 0
-for i, C in enumerate(regularization):
-    start_time = datetime.datetime.now()
-    # clf = LogisticRegression(verbose=0, penalty='l2', C=C, n_jobs=-1)
-    clf = LogisticRegression(verbose=0, C=C, n_jobs=-1)
-    kf = KFold(n_splits=5, shuffle=True)
-    cvs = cross_val_score(estimator=clf, cv=kf, X=data, y=result['radiant_win'], scoring='roc_auc')
-    # print('Time elapsed:', datetime.datetime.now() - start_time)
-    print('C is ', C, 'Cross value score ', cvs.mean())
-    if cvs.mean() > max:
-        max = cvs.mean()
-        max_c = C
-print('Max is ', max, 'With C = ', max_c)
+# scaler = StandardScaler()
+# data = scaler.fit_transform(data)
+# regularization = np.arange(1, 10, 0.1)  # 8.1 max Max is  0.7164357243534086 With C =  1.3000000000000003
+# # regularization = np.power(10.0, np.arange(-5, 6))  # Max is  0.7164706557971849 With C =  0.01
+# max = 0
+# max_c = 0
+# for i, C in enumerate(regularization):
+#     start_time = datetime.datetime.now()
+#     # clf = LogisticRegression(verbose=0, penalty='l2', C=C, n_jobs=-1)
+#     clf = LogisticRegression(verbose=0, C=C)
+#     kf = KFold(n_splits=5, shuffle=True, random_state=45)
+#     cvs = cross_val_score(estimator=clf, cv=kf, X=data, y=result['radiant_win'], scoring='roc_auc')
+#     # print('Time elapsed:', datetime.datetime.now() - start_time)
+#     print('C is ', C, 'Cross value score ', cvs.mean())
+#     if cvs.mean() > max:
+#         max = cvs.mean()
+#         max_c = C
+# print('Max is ', max, 'With C = ', max_c)
 
 # # На предыдущем шаге мы исключили из выборки признаки rM_hero и dM_hero, которые показывают, какие именно герои
 # # играли за каждую команду. Это важные признаки — герои имеют разные характеристики, и некоторые из них выигрывают
@@ -109,10 +111,31 @@ print('Max is ', max, 'With C = ', max_c)
 # втором пункте данного этапа.
 # N — количество различных героев в выборке
 
-# X_pick = np.zeros((data.shape[0], 108))
-# for i, match_id in enumerate(data.index):
-#     for p in range(5):
-#         X_pick[i, data.ix[match_id, 'r%d_hero' % (p+1)]-1] = 1
-#         X_pick[i, data.ix[match_id, 'd%d_hero' % (p+1)]-1] = -1
-#
-# print(X_pick)
+heroes_lenth = pandas.read_csv('heroes.csv').shape[0]
+X_pick = np.zeros((data.shape[0], heroes_lenth))
+for i, match_id in enumerate(data.index):
+    for p in range(5):
+        X_pick[i, data.ix[match_id, 'r%d_hero' % (p+1)]-1] = 1
+        X_pick[i, data.ix[match_id, 'd%d_hero' % (p+1)]-1] = -1
+
+data_heroes = pandas.DataFrame(X_pick)   # not so elegant but works
+data = pandas.concat([data, data_heroes], axis=1)
+
+scaler = StandardScaler()
+data = scaler.fit_transform(data)
+# regularization = np.arange(1, 10, 0.1)  # 8.1 max Max is  0.7164357243534086 With C =  1.3000000000000003
+regularization = np.power(10.0, np.arange(-5, 6))  # Max is  0.7164706557971849 With C =  0.01
+max = 0
+max_c = 0
+for i, C in enumerate(regularization):
+    start_time = datetime.datetime.now()
+    # clf = LogisticRegression(verbose=0, penalty='l2', C=C, n_jobs=-1)
+    clf = LogisticRegression(verbose=0, C=C)
+    kf = KFold(n_splits=5, shuffle=True, random_state=45)
+    cvs = cross_val_score(estimator=clf, cv=kf, X=data, y=result['radiant_win'], scoring='roc_auc')
+    # print('Time elapsed:', datetime.datetime.now() - start_time)
+    print('C is ', C, 'Cross value score ', cvs.mean())
+    if cvs.mean() > max:
+        max = cvs.mean()
+        max_c = C
+print('Max is ', max, 'With C = ', max_c)  # Max is  0.7519233522872815 With C =  0.01
